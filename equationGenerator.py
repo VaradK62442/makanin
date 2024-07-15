@@ -89,7 +89,7 @@ class EquationGenerator:
 
         print(f"Results for n = {self.n}:")
         print(f"Solutions found for {total_solns_found} equations" + \
-              f" ({round(self.soln_found_prop * 100, 2)}%)")
+              f" ({self.soln_found_prop * 100:.2f}%)")
 
         for key, value in soln_types.items():
             print(f"{EquationGenerator.RESULTS_DICT[key]} - {value}")
