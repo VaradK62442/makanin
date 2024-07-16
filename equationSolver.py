@@ -125,12 +125,10 @@ class EquationSolver:
     
 
 def main():
-    eqn = EquationSolver("aba", "xbx")
+    eqn = EquationSolver("abxax", "axbbx")
     soln = eqn.solve()
-    print()
-    print(eqn._replacements)
-    print(f"soln: x = {soln}")
     print(f"valid soln: {eqn.check_soln(soln)}")
+    print(f"soln: x = {soln}")
 
 
 if __name__ == "__main__":
