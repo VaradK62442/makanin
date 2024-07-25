@@ -2,9 +2,9 @@
 # things that don't really fit anywhere else in the files
 from equationGenerator import EquationGenerator
 
-def find_solns_greater_than_1(n):
+def find_solns_greater_than_1(n, filename):
     results = []
-    with open("solns_with_length_greater_than_1.txt", "w") as file:
+    with open(filename, "w") as file:
         g = EquationGenerator(n)
         g._generate_equations()
         for i, v in enumerate(g._words):
@@ -29,4 +29,4 @@ def find_solns_greater_than_1(n):
 
     return results
 
-find_solns_greater_than_1(5)
+find_solns_greater_than_1(5, "solns_greater_than_1.txt")
