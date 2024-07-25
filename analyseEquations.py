@@ -8,7 +8,7 @@ from time import time
 def main():
     max_n = 6
     results = []
-    file = open("batch_results.txt", "w")
+    file = open("results/batch_results.txt", "w")
 
     for n in range(2, max_n + 1):
         start_time = time()
