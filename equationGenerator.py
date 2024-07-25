@@ -1,5 +1,5 @@
-from solvers.equationSolver import EquationSolver
-from solvers.pairwiseEqnSolver import PairwiseEqnSolver
+from equationSolver import EquationSolver
+from pairwiseEqnSolver import PairwiseEqnSolver
 
 class EquationGenerator:
     # class to generate equations of length n
