@@ -31,7 +31,16 @@ class EquationSolver:
 
     def __str__(self):
         return f"{self.V} = {self.W}"
+    
+    def __eq__(self, other):
+        return self.V == other.V and self.W == other.W
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
+    def __hash__(self):
+        return hash((self.V, self.W))
+    
     def _remove_prefixes(self):
         i = 0
         while i < self.n and self.v[i] == self.w[i]:
