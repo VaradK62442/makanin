@@ -74,7 +74,8 @@ class EquationGenerator:
     def print_results(self, filename=None):
         self._format_results()
         col_width = 16
-        file = open(filename, "w")
+        if filename is not None:
+            file = open(filename, "w")
         
         for key, value in self._formatted_results.items():
             res = str(key).ljust(col_width) + EquationGenerator.RESULTS_DICT[value[0]].ljust(int(col_width * 1.5))

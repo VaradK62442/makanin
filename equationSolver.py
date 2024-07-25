@@ -59,7 +59,6 @@ class EquationSolver(AbstractSolver):
         return False
     
     def _backtrack(self):
-        self._replacements = self._replacements[::-1]
         solved_x = "x"
         for variable, replacement in self._replacements:
             solved_x = solved_x.replace(variable, replacement)
@@ -85,11 +84,11 @@ class EquationSolver(AbstractSolver):
                 break
 
             # if v = x.. and w = a.., then set x = ax, and cancel
-            if self.v[0] in EquationSolver.VARIABLES and self.w[0] in EquationSolver.LETTERS:
+            if self.v[0] in AbstractSolver.VARIABLES and self.w[0] in AbstractSolver.LETTERS:
                 self._perform_replacement()
 
             # if v = a.. and w = x.., then swap, and set x = xa, and cancel
-            elif self.v[0] in EquationSolver.LETTERS and self.w[0] in EquationSolver.VARIABLES:
+            elif self.v[0] in AbstractSolver.LETTERS and self.w[0] in AbstractSolver.VARIABLES:
                 self.v, self.w = self.w, self.v
                 dprint(f"swapped: {self}")
                 self._perform_replacement()
