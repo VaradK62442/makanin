@@ -1,38 +1,16 @@
-class PairwiseEqnSolver:
+from abstractSolver import AbstractSolver
 
-    LETTERS = set("ab")
-    VARIABLES = set("x")
+class PairwiseEqnSolver(AbstractSolver):
 
     def __init__(self, v, w):
-        assert len(v) == len(w)
-        assert set(v).issubset(PairwiseEqnSolver.LETTERS.union(PairwiseEqnSolver.VARIABLES))
-        assert set(w).issubset(PairwiseEqnSolver.LETTERS.union(PairwiseEqnSolver.VARIABLES))
-
-        self.V = v
-        self.W = w
-
-        self.v = v
-        self.w = w
-        self.n = len(v)
+        super().__init__(v, w)
 
         self.P = []
         for p, q in zip(v, w):
             if p != q:
                 self.P.append((p, q))
 
-    def __str__(self):
-        return f"{self.V} = {self.W}"
-    
-    def __eq__(self, other):
-        return self.V == other.V and self.W == other.W
-    
-    def __ne__(self, other):
-        return not self.__eq__(other)
-    
-    def __hash__(self):
-        return hash((self.V, self.W))
-
-    def solve(self):
+    def solve(self) -> str:
         # if only (x,x) and (c,c) for c in {a,b}
         if len(self.P) == 0:
             return ""
@@ -59,9 +37,6 @@ class PairwiseEqnSolver:
                 return "b"
 
         return ""
-        
-    def check_soln(self, soln):
-        return self.V.replace("x", soln) == self.W.replace("x", soln)
         
 def main():
     e = PairwiseEqnSolver("axa", "aba")

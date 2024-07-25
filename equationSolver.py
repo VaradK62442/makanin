@@ -5,41 +5,15 @@
 # we always have the case x... = a...
 # assuming the equation has no matching prefixes and suffixes
 
-DEBUG = False
-dprint = lambda *args, **kwargs: print(*args, **kwargs) if DEBUG else None
+from abstractSolver import AbstractSolver, dprint
 
+class EquationSolver(AbstractSolver):
 
-class EquationSolver:
-
-    LETTERS = set("ab")
-    VARIABLES = set("x")
     ALLOWED_ITERATIONS = 100
 
     def __init__(self, v, w):
-        assert len(v) == len(w)
-        assert set(v).issubset(EquationSolver.LETTERS.union(EquationSolver.VARIABLES))
-        assert set(w).issubset(EquationSolver.LETTERS.union(EquationSolver.VARIABLES))
-
-        self.V = v
-        self.W = w
-
-        self.v = v
-        self.w = w
-        self.n = len(v)
-
+        super().__init__(v, w)
         self._replacements = []
-
-    def __str__(self):
-        return f"{self.V} = {self.W}"
-    
-    def __eq__(self, other):
-        return self.V == other.V and self.W == other.W
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-    
-    def __hash__(self):
-        return hash((self.V, self.W))
     
     def _remove_prefixes(self):
         i = 0
@@ -79,16 +53,12 @@ class EquationSolver:
         self._remove_prefixes_and_suffixes()
 
     def _try_empty_replacement(self):
-        # try replacing x with empty string
-        # if V == W, then return true
-        # else return false
-        
         if self.v.replace("x", "") == self.w.replace("x", ""):
             dprint("empty replacement")
             return True
         return False
     
-    def backtrack(self):
+    def _backtrack(self):
         self._replacements = self._replacements[::-1]
         solved_x = "x"
         for variable, replacement in self._replacements:
@@ -98,7 +68,7 @@ class EquationSolver:
 
         return solved_x
 
-    def solve(self):
+    def solve(self) -> str:
         dprint(self)
 
         count = 0
@@ -127,14 +97,11 @@ class EquationSolver:
             dprint(self)
             count += 1
 
-        return self.backtrack()
-
-    def check_soln(self, solved_x):
-        return self.V.replace("x", solved_x) == self.W.replace("x", solved_x)
+        return self._backtrack()
     
 
 def main():
-    eqn = EquationSolver("abxax", "axbbx")
+    eqn = EquationSolver("abax", "xaab")
     soln = eqn.solve()
     print(f"valid soln: {eqn.check_soln(soln)}")
     print(f"soln: x = {soln}")
