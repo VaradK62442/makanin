@@ -11,9 +11,10 @@ class EquationSolver(AbstractSolver):
 
     ALLOWED_ITERATIONS = 100
 
-    def __init__(self, v, w):
+    def __init__(self, v, w, x_is_non_trivial=False):
         super().__init__(v, w)
         self._replacements = []
+        self._x_is_non_trivial = x_is_non_trivial
     
     def _remove_prefixes(self):
         i = 0
@@ -80,8 +81,10 @@ class EquationSolver(AbstractSolver):
                 dprint("Triviality")
                 return ""
             
-            if self._try_empty_replacement():
+            if not self._x_is_non_trivial and self._try_empty_replacement():
                 break
+
+            self._x_is_non_trivial = False
 
             # if v = x.. and w = a.., then set x = ax, and cancel
             if self.v[0] in AbstractSolver.VARIABLES and self.w[0] in AbstractSolver.LETTERS:

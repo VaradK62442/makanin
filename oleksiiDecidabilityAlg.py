@@ -2,6 +2,8 @@ from equationGenerator import EquationGenerator
 from equationSolver import EquationSolver
 from abstractSolver import dprint
 
+from time import time
+
 def generate_all_equations(n):
     equations = []
 
@@ -54,9 +56,13 @@ def do_solns_exist(equations):
 
         # try trivial soln
         V, W = eqn.V, eqn.W
+        x_is_non_trivial = False
         V = V.replace("x", ""); W = W.replace("x", "")#
         if V == W:
+            x_is_non_trivial = False
             return ""
+        else:
+            x_is_non_trivial = True
 
         # def prefixes_match(v, w):
         #     # check if letters up to first occurrence of x are equal
@@ -89,13 +95,17 @@ def do_solns_exist(equations):
 
             C_length = V.find("x")
             D_length = f"{W[1:]}x".find("x") # add dummy x to end
+            
+            if C_length > D_length:
+                return None
+
             min_length = min(C_length, D_length)
             C = V[:C_length]; D = W[1:D_length+1]
 
             C_prime = C[C_length-min_length:]
             D_prime = D[:min_length]
 
-            e = EquationSolver(C_prime, D_prime)
+            e = EquationSolver(C_prime+"x", "x"+D_prime, x_is_non_trivial)
             quad_soln = e.solve()
 
             if eqn.V.replace("x", quad_soln) == eqn.W.replace("x", quad_soln):
@@ -112,7 +122,7 @@ def do_solns_exist(equations):
 
 
     results = []
-    # equations = [EquationSolver("aabx", "aaax")]
+    # equations = [EquationSolver("bbaxa", "xbaba")]
     for eqn in equations:
         results.append(run(eqn))
     
@@ -121,24 +131,33 @@ def do_solns_exist(equations):
     print(f"Other: {len([e for e in results if e == None])}")
 
     # check validity against EquationSolver
+    invalid_solns = 0
     for i, result in enumerate(results):
         e = equations[i]
         soln = e.solve()
         valid_soln = e.check_soln(soln)
         if result != False and result != None:
             if result != soln:
-                print(f"Invalid result: {e}, {result}")
+                print(f"Invalid result: {e}, {result}, {soln}")
+                invalid_solns += 1
 
         elif result is False:
             if valid_soln:
                 print(f"Invalid result: {e}, {result}, {soln}")
+                invalid_solns += 1
+
+    print(f"Invalid solns: {invalid_solns}")
 
 
 def main():
-    n = 4
+    start_time = time()
+
+    n = 6
     equations = generate_all_equations(n)
     same_const_eqns = get_desired_equations(equations)
-    results = do_solns_exist(same_const_eqns)
+    do_solns_exist(same_const_eqns)
+
+    print(f"Time taken: {time() - start_time}")
 
 
 if __name__ == "__main__":
