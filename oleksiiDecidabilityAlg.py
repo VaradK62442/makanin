@@ -59,26 +59,20 @@ def do_solns_exist(equations):
         x_is_non_trivial = False
         V = V.replace("x", ""); W = W.replace("x", "")#
         if V == W:
-            x_is_non_trivial = False
             return ""
         else:
             x_is_non_trivial = True
 
-        # def prefixes_match(v, w):
-        #     # check if letters up to first occurrence of x are equal
-        #     v_consts = v[:v.find("x")]; w_consts = w[:w.find("x")]
-        #     min_length = min(len(v_consts), len(w_consts))
-        #     v_consts = v_consts[:min_length]; w_consts = w_consts[:min_length]
+        def prefixes_match(v, w):
+            # check if letters up to first occurrence of x are equal
+            v_consts = v[:v.find("x")]; w_consts = w[:w.find("x")]
+            min_length = min(len(v_consts), len(w_consts))
+            v_consts = v_consts[:min_length]; w_consts = w_consts[:min_length]
 
-        #     print("prefixes")
-        #     print(v, w)
-        #     print(v_consts, w_consts)
-        #     print()
+            return v_consts == w_consts
 
-        #     return v_consts == w_consts
-
-        # if not (prefixes_match(eqn.V, eqn.W) and prefixes_match(eqn.V[::-1], eqn.W[::-1])):
-        #     return False
+        if not prefixes_match(eqn.V, eqn.W) or not prefixes_match(eqn.V[::-1], eqn.W[::-1]):
+            return False
 
         # check number of variables in eqn
         if get_num_letters_in_set(eqn.V, EquationSolver.VARIABLES) != get_num_letters_in_set(eqn.W, EquationSolver.VARIABLES):
