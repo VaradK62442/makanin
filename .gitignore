@@ -1,4 +1,4 @@
 *.txt
 *.png
 __pycache__/
-results/
+*results/
