@@ -3,6 +3,9 @@
 from equationGenerator import EquationGenerator
 
 from pprint import pprint as pp
+from matplotlib import pyplot as plt
+from tqdm import tqdm
+
 
 def find_solns_greater_than_1(n, filename):
     results = []
@@ -68,12 +71,30 @@ def analyse_reverse_eqns(n, filename):
             results_count[False] += 1
 
     true_file.close(); false_file.close()
-    pp(f"Results for n={n}: {results_count} ({100 * results_count[True] / (results_count[True] + results_count[False]):.2f}% have a solution)")
+    total = results_count[True] + results_count[False]
+
+    return (100 * results_count[True]/total, 100 * results_count[False]/total)
 
 
-analyse_reverse_eqns(2, "reverse_eqn_results/reverse_eqns_2")
-analyse_reverse_eqns(3, "reverse_eqn_results/reverse_eqns_3")
-analyse_reverse_eqns(4, "reverse_eqn_results/reverse_eqns_4")
-analyse_reverse_eqns(5, "reverse_eqn_results/reverse_eqns_5")
-analyse_reverse_eqns(6, "reverse_eqn_results/reverse_eqns_6")
-analyse_reverse_eqns(7, "reverse_eqn_results/reverse_eqns_7")
+def graph_results(results_dict):
+    # expected dict mapping n: (percentage_true, percentage_false)
+    _, ax = plt.subplots()
+    ax.set_xlabel("n")
+    ax.set_ylabel("Percentage of equations")
+    ax.set_title("Percentage of equations with solutions")
+    ax.bar(results_dict.keys(), [v[0] for v in results_dict.values()], label="True")
+    ax.legend()
+    plt.show()
+
+
+def reverse_analysis():
+    results = {}
+    for i in tqdm(range(2, 8)):
+        results[i] = analyse_reverse_eqns(i, f"reverse_eqn_results/reverse_eqns_{i}")
+
+    for i in results.keys():
+        pp(f"Results for n = {i}:{results[i][0]:.2f}% have a solution")
+    graph_results(results)
+
+
+reverse_analysis()
