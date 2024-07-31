@@ -38,16 +38,13 @@ class EquationGenerator:
             for letter in list(EquationGenerator.ALL_SYMBOLS):
                 self._generate_equations(word + letter, num_letters - 1)
 
-    def solve_all(self, condition=None):
+    def solve_all(self):
         self._generate_equations()
 
         for i, v in enumerate(self._words):
             for _, w in enumerate(self._words[i+1:]):
                 # ensure there is at least one x in the equation
                 if "x" not in v and "x" not in w:
-                    continue
-
-                if condition is not None and not condition(v, w):
                     continue
 
                 dprint(f"v: {v}, w: {w}")
@@ -112,8 +109,8 @@ class EquationGenerator:
             print(f"{EquationGenerator.RESULTS_DICT[key]} - {value}")
         print()
 
-    def run(self, filename=None, condition=None):
-        self.solve_all(condition=condition)
+    def run(self, filename=None):
+        self.solve_all()
         self.print_results(filename)
         self.count_soln_types()
 
@@ -127,8 +124,8 @@ def compare_soln_types(type1: AbstractSolver, type2: AbstractSolver):
                 no_match_count += 1
         else:
             no_match_count += 1
-            print(f"{type1_valid_soln, type1_soln} != {type2_valid_soln, type2_soln}")
-            print(f"{solver}")
+            print(f"{EquationGenerator.RESULTS_DICT[type1_valid_soln], type1_soln} != {EquationGenerator.RESULTS_DICT[type2_valid_soln], type2_soln}")
+            print(f"{solver}\n")
 
     print(f"non-matching solutions: {no_match_count}")
 
@@ -139,10 +136,7 @@ def main():
     e.run("results.txt")
 
     p = EquationGenerator(n, solver=OleksiiSolver)
-    case1 = lambda v, w: ((v[0] in EquationSolver.VARIABLES and w[0] in EquationSolver.LETTERS) or \
-                            (v[0] in EquationSolver.LETTERS and w[0] in EquationSolver.VARIABLES)) and \
-                                "x" in v and "x" in w
-    p.run("oleksii_results.txt", condition=case1)
+    p.run("oleksii_results.txt")
 
     compare_soln_types(e, p)
 

@@ -30,6 +30,12 @@ class AbstractSolver:
     def __hash__(self):
         return hash((self.V, self.W))
     
+    def _preliminary_check(self) -> bool:
+        if self.v[0] in AbstractSolver.VARIABLES and self.w[0] in AbstractSolver.VARIABLES:
+            if self.v[0] != self.w[0]:
+                return False
+        return True
+    
     def solve(self) -> str:
         raise NotImplementedError("Subclasses must implement this method")
     

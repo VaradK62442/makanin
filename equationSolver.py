@@ -66,7 +66,11 @@ class EquationSolver(AbstractSolver):
         dprint(self)
 
         count = 0
-        while count < EquationSolver.ALLOWED_ITERATIONS and self.n > 1:
+        self._remove_prefixes_and_suffixes()
+        if not self._preliminary_check():
+            return ""
+
+        while count < EquationSolver.ALLOWED_ITERATIONS and self.n > 0:
             # remove prefixes and suffixes
             self._remove_prefixes_and_suffixes()
 
