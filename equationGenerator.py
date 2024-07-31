@@ -1,5 +1,7 @@
 from equationSolver import EquationSolver
 from pairwiseEqnSolver import PairwiseEqnSolver
+from oleksiiSolver import OleksiiSolver
+from abstractSolver import AbstractSolver, dprint
 
 class EquationGenerator:
     # class to generate equations of length n
@@ -36,7 +38,7 @@ class EquationGenerator:
             for letter in list(EquationGenerator.ALL_SYMBOLS):
                 self._generate_equations(word + letter, num_letters - 1)
 
-    def solve_all(self):
+    def solve_all(self, condition=None):
         self._generate_equations()
 
         for i, v in enumerate(self._words):
@@ -45,6 +47,10 @@ class EquationGenerator:
                 if "x" not in v and "x" not in w:
                     continue
 
+                if condition is not None and not condition(v, w):
+                    continue
+
+                dprint(f"v: {v}, w: {w}")
                 e = self._solver(v, w)
                 
                 # do not include equation if it has matching prefixes and suffixes
@@ -106,12 +112,12 @@ class EquationGenerator:
             print(f"{EquationGenerator.RESULTS_DICT[key]} - {value}")
         print()
 
-    def run(self, filename=None):
-        self.solve_all()
+    def run(self, filename=None, condition=None):
+        self.solve_all(condition=condition)
         self.print_results(filename)
         self.count_soln_types()
 
-def compare_soln_types(type1, type2):
+def compare_soln_types(type1: AbstractSolver, type2: AbstractSolver):
     no_match_count = 0
     for solver in type1._formatted_results.keys():
         type1_valid_soln, type1_soln = type1._formatted_results[solver]
@@ -132,8 +138,11 @@ def main():
     e = EquationGenerator(n)
     e.run("results.txt")
 
-    p = EquationGenerator(n, solver=PairwiseEqnSolver)
-    p.run("pairwise_results.txt")
+    p = EquationGenerator(n, solver=OleksiiSolver)
+    case1 = lambda v, w: ((v[0] in EquationSolver.VARIABLES and w[0] in EquationSolver.LETTERS) or \
+                            (v[0] in EquationSolver.LETTERS and w[0] in EquationSolver.VARIABLES)) and \
+                                "x" in v and "x" in w
+    p.run("oleksii_results.txt", condition=case1)
 
     compare_soln_types(e, p)
 

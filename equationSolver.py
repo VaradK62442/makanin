@@ -22,21 +22,16 @@ class EquationSolver(AbstractSolver):
             i += 1
         self.v, self.w = self.v[i:], self.w[i:]
         self.n = min(len(self.v), len(self.w))
-        dprint(f"prefixed: {self}")
+        dprint(f"prefixed: {self.v} = {self.w}")
 
     def _reverse_words(self):
         self.v, self.w = self.v[::-1], self.w[::-1]
 
     def _remove_suffixes(self):
-        # i = 0
-        # while i < self.n and self.v[-i-1] == self.w[-i-1]:
-        #     i += 1
-        # self.v, self.w = self.v[:-i], self.w[:-i]
-        # self.n = min(len(self.v), len(self.w))
         self._reverse_words()
         self._remove_prefixes()
         self._reverse_words()
-        dprint(f"suffixed: {self}")
+        dprint(f"suffixed: {self.v} = {self.w}")
 
     def _remove_prefixes_and_suffixes(self):
         self._remove_prefixes()
@@ -50,7 +45,7 @@ class EquationSolver(AbstractSolver):
         self._replacements.append((self.v[0], self.w[0] + self.v[0]))
         dprint(f"appended: ({self.v[0]}, {self.w[0] + self.v[0]})")
         self._replace_variable(self.v[0], self.w[0] + self.v[0])
-        dprint(f"replaced: {self}")
+        dprint(f"replaced: {self.v} = {self.w}")
         self._remove_prefixes_and_suffixes()
 
     def _try_empty_replacement(self):
@@ -59,8 +54,7 @@ class EquationSolver(AbstractSolver):
             return True
         return False
     
-    def _backtrack(self):
-        solved_x = "x"
+    def _backtrack(self, solved_x="x"):
         for variable, replacement in self._replacements:
             solved_x = solved_x.replace(variable, replacement)
 
