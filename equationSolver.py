@@ -15,27 +15,6 @@ class EquationSolver(AbstractSolver):
         super().__init__(v, w)
         self._replacements = []
         self._x_is_non_trivial = x_is_non_trivial
-    
-    def _remove_prefixes(self):
-        i = 0
-        while i < self.n and self.v[i] == self.w[i]:
-            i += 1
-        self.v, self.w = self.v[i:], self.w[i:]
-        self.n = min(len(self.v), len(self.w))
-        dprint(f"prefixed: {self.v} = {self.w}")
-
-    def _reverse_words(self):
-        self.v, self.w = self.v[::-1], self.w[::-1]
-
-    def _remove_suffixes(self):
-        self._reverse_words()
-        self._remove_prefixes()
-        self._reverse_words()
-        dprint(f"suffixed: {self.v} = {self.w}")
-
-    def _remove_prefixes_and_suffixes(self):
-        self._remove_prefixes()
-        self._remove_suffixes()
 
     def _replace_variable(self, variable, replacement):
         self.v = self.v.replace(variable, replacement)
@@ -66,7 +45,6 @@ class EquationSolver(AbstractSolver):
         dprint(self)
 
         count = 0
-        self._remove_prefixes_and_suffixes()
         if not self._preliminary_check():
             return ""
 
