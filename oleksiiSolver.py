@@ -4,21 +4,37 @@ from abstractSolver import dprint
 class OleksiiSolver(EquationSolver):
     def __init__(self, v: str, w: str):
         super().__init__(v, w)
+        dprint(f"initialised: {self}")
         
     def solve(self) -> str:
+
+        def _get_A(self):
+            return self.v[1:f"{self.v[1:]}x".find("x")+1]
+        
+        def _get_B(self):
+            return self.w[:self.w.find("x")]
+        
         dprint(self)
 
         count = 0
-        self._remove_prefixes_and_suffixes()
-        if not self._preliminary_check():
-            return ""
-        A = self._get_A(); B = self._get_B()
+        prelim = self._preliminary_check()
+        if prelim is not None:
+            return prelim
+        dprint("preliminary check passed")
+
+        if self.v[0] in EquationSolver.LETTERS:
+            self.v, self.w = self.w, self.v
+
+        A = _get_A(); B = _get_B()
 
         while count < EquationSolver.ALLOWED_ITERATIONS and len(A) != len(B) and self.n > 1:
-            # repeat while A and B are different lengths
+            if self._try_empty_replacement():
+                A = ""; B = ""
+                break
+
+            A = _get_A(); B = _get_B()
+            dprint(f"iteration {count}: {A} {B}; {self.v} = {self.w}; {self.n}")
             self._perform_replacement()
-            A = self._get_A(); B = self._get_B()
-            dprint(A, B)
 
             count += 1
 
@@ -28,13 +44,7 @@ class OleksiiSolver(EquationSolver):
         if soln == "":
             soln = "x"
         
-        return self._backtrack(solved_x = soln)
-
-    def _get_A(self):
-        return self.v[1:f"{self.v[1:]}x".find("x")+1]
-    
-    def _get_B(self):
-        return self.w[:self.w.find("x")]
+        return self._backtrack(solved_x=soln)
 
 
 def main():
