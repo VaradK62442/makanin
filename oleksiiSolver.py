@@ -8,11 +8,19 @@ class OleksiiSolver(EquationSolver):
         
     def solve(self) -> str:
 
-        def _get_A(self):
-            return self.v[1:f"{self.v[1:]}x".find("x")+1]
+        def _get_A(B):
+            A = self.v[1:f"{self.v[1:]}x".find("x")+1]
+            if len(A) > len(B):
+                A = A[:len(B)]
+            return A
         
-        def _get_B(self):
+        def _get_B():
             return self.w[:self.w.find("x")]
+        
+        def _get_A_B() -> tuple:
+            B = _get_B()
+            A = _get_A(B)
+            return A, B
         
         dprint(self)
 
@@ -25,14 +33,14 @@ class OleksiiSolver(EquationSolver):
         if self.v[0] in EquationSolver.LETTERS:
             self.v, self.w = self.w, self.v
 
-        A = _get_A(); B = _get_B()
+        A, B = _get_A_B()
 
         while count < EquationSolver.ALLOWED_ITERATIONS and len(A) != len(B) and self.n > 1:
             if self._try_empty_replacement():
                 A = ""; B = ""
                 break
 
-            A = _get_A(); B = _get_B()
+            A, B = _get_A_B()
             dprint(f"iteration {count}: {A} {B}; {self.v} = {self.w}; {self.n}")
             self._perform_replacement()
 

@@ -1,13 +1,12 @@
 from equationSolver import EquationSolver
-from pairwiseEqnSolver import PairwiseEqnSolver
 from oleksiiSolver import OleksiiSolver
 from abstractSolver import AbstractSolver, dprint
 
 class EquationGenerator:
     # class to generate equations of length n
 
-    LETTERS = EquationSolver.LETTERS
-    VARIABLES = EquationSolver.VARIABLES
+    LETTERS = AbstractSolver.LETTERS
+    VARIABLES = AbstractSolver.VARIABLES
 
     ALL_SYMBOLS = LETTERS.union(VARIABLES)
     RESULTS_DICT = {
@@ -16,7 +15,7 @@ class EquationGenerator:
         0: "No solution found",
     }
 
-    def __init__(self, n, solver=EquationSolver):
+    def __init__(self, n, solver=OleksiiSolver):
         self.n = n
         self._words = []
         self._results = {}
@@ -114,7 +113,8 @@ class EquationGenerator:
         self.print_results(filename)
         self.count_soln_types()
 
-def compare_soln_types(type1: AbstractSolver, type2: AbstractSolver):
+def compare_soln_types(type1, type2):
+    print(f"Comparing solvers {type1._solver.__name__} and {type2._solver.__name__}:")
     no_match_count = 0
     for solver in type1._formatted_results.keys():
         type1_valid_soln, type1_soln = type1._formatted_results[solver]
@@ -133,10 +133,10 @@ def main():
     n = 4
 
     e = EquationGenerator(n)
-    e.run("results.txt")
+    e.run("oleksii_results.txt")
 
-    p = EquationGenerator(n, solver=OleksiiSolver)
-    p.run("oleksii_results.txt")
+    p = EquationGenerator(n, solver=EquationSolver)
+    p.run("equation_results.txt")
 
     compare_soln_types(e, p)
 

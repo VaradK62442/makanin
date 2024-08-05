@@ -1,4 +1,4 @@
-DEBUG = True
+DEBUG = False
 dprint = lambda *args, **kwargs: print(*args, **kwargs) if DEBUG else None
 
 class AbstractSolver:
