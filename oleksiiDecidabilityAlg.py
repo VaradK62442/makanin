@@ -52,12 +52,12 @@ def do_solns_exist(equations):
         def case3(eqn):
             # case 3: x... = C...
             return (eqn.V[0] in letters and eqn.W[0] in variables) or \
-                   (eqn.V[0] in variables and eqn.V[0] in letters)
+                   (eqn.V[0] in variables and eqn.W[0] in letters)
 
         # try trivial soln
         V, W = eqn.V, eqn.W
         x_is_non_trivial = False
-        V = V.replace("x", ""); W = W.replace("x", "")#
+        V = V.replace("x", ""); W = W.replace("x", "")
         if V == W:
             return ""
         else:

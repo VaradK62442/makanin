@@ -1,6 +1,7 @@
 # utility functions
 # things that don't really fit anywhere else in the files
 from equationGenerator import EquationGenerator
+from equationSolver import EquationSolver
 
 from pprint import pprint as pp
 from matplotlib import pyplot as plt
@@ -89,11 +90,11 @@ def graph_results(results_dict):
 
 def reverse_analysis():
     results = {}
-    for i in tqdm(range(2, 8)):
+    for i in tqdm(range(2, 11)):
         results[i] = analyse_reverse_eqns(i, f"reverse_eqn_results/reverse_eqns_{i}")
 
     for i in results.keys():
-        pp(f"Results for n = {i}:{results[i][0]:.2f}% have a solution")
+        pp(f"Results for n = {i}: {results[i][0]:.2f}% have a solution")
     graph_results(results)
 
 
