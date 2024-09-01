@@ -101,6 +101,7 @@ class MatrixSolution:
             the equation will be either a... = x... or x... = a...
         
         given this list, this function generates all possible equations
+        
         recursive approach
         """        
 
@@ -123,10 +124,9 @@ class MatrixSolution:
 
 def main():
     matrix_A = [
-        ["1", "0", "0", "0"],
-        ["0", "a", "0", "0"],
-        ["0", "0", "1", "0"],
-        ["0", "0", "0", "a"]
+        ["a", "0", "0"],
+        ["0", "1", "0"],
+        ["0", "0", "a"]
     ]
 
     ms = MatrixSolution(matrix_A)

@@ -1,5 +1,7 @@
 # Matrix Solutions
 
+Related code in file ```matrixSolution.py```.
+
 Given an equation $U = V$ with $U$ and $V$ having a differing number of constants, say $abx = xbx$, we can convert it into a vector, $(a, b, x)^T = (x, b, x)^T$.
 This equation has the solution $x = a$, and a matrix can be used that represents this equation and its solution.
 We need a matrix $A$ such that $Au = Av$, where $u$ and $v$ are the vectors representing the variables in the equation.
@@ -111,3 +113,12 @@ Hence, the matrix $A$ corresponds to these $6$ equations.
 - $xaa = xax$
 
 - $xba = xbx$
+
+Note that we can represent a matrix as a tuple with the diagonal elements, to make things easier to express. 
+e.g. the above matrix $A$ would be represented as the tuple $(a, 1, a)$.
+
+### Future thoughts
+
+Notice that the more "rules" we add on the matrix / tuple, the more information we encode, but the more the tuple just represents the equation itself. For example, adding another symbol for the $i^\text{th}$ elements both being $x$ will further disambiguate equations and give more information in the matrix.
+
+We want to strike a careful balance between encoding too little and encoding too much, since we don't want to just end up essentially having a unique tuple for each equation.
