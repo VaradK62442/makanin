@@ -5,9 +5,7 @@ See `matrixSolution.md`.
 from typing import List
 from pprint import pprint as pp
 
-from abstractSolver import AbstractSolver
-
-LETTERS = AbstractSolver.LETTERS
+LETTERS = ["a", "b"]
 VARIABLE = "x"
 DIAGONAL_SYMBOLS = lambda l_type: ["1"] + [l_type]
 

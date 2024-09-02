@@ -4,8 +4,7 @@ See `matrixSolution.md`.
 
 from typing import List
 
-from abstractSolver import AbstractSolver
-LETTERS = AbstractSolver.LETTERS
+LETTERS = ["a", "b"]
 VARIABLE = "x"
 
 

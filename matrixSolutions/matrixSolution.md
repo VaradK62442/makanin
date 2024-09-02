@@ -133,7 +133,7 @@ Similar to the $a$ and $1$ symbol, we introduce a new symbol that can be in the 
 
 We have the following formula to count all possible equations for a given value of $n$. Fix a matrix with some $k$ number of $a$ elements. This gives 
 $$
-\sum_{i=0}^{\lfloor {k\over 2}\rfloor-1}{k\choose i}
+\sum_{i=0}^{\left\lceil {k\over 2}\right\rceil-1}{k\choose i}
 $$
 possible equations that are contributed by the $a$ elements.
 The remaining values are either $1$ or $\alpha$. $\alpha$ contributes one equation, $1$ contributes two. To count the number of equations contributed, we have
@@ -143,7 +143,7 @@ $$
 This multiplied by two to account for $a$ or $b$, and then multiplied by $n\choose k$ gives all possible equations for a fixed $k$.
 Thus, the number of all possible equations for a fixed $n$ is
 $$
-\sum_{k=0}^n\left(2{n\choose k}\times\sum_{i=0}^{\lfloor {k\over 2}\rfloor-1}{k\choose i}\times\sum_{j=0}^{n-k}2^j{n-k\choose j}\right).
+\sum_{k=0}^n\left(2{n\choose k}\times\sum_{i=0}^{\left\lceil {k\over 2}\right\rceil-1}{k\choose i}\times\sum_{j=0}^{n-k}2^j{n-k\choose j}\right).
 $$
 
 Note that this only generates equations which lead to equations with differing number of constants on either side.
