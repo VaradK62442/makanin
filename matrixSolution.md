@@ -122,3 +122,28 @@ e.g. the above matrix $A$ would be represented as the tuple $(a, 1, a)$.
 Notice that the more "rules" we add on the matrix / tuple, the more information we encode, but the more the tuple just represents the equation itself. For example, adding another symbol for the $i^\text{th}$ elements both being $x$ will further disambiguate equations and give more information in the matrix.
 
 We want to strike a careful balance between encoding too little and encoding too much, since we don't want to just end up essentially having a unique tuple for each equation.
+
+---
+
+## $\alpha$, $\beta$ symbols
+
+Similar to the $a$ and $1$ symbol, we introduce a new symbol that can be in the matrix - $\alpha$ and $\beta$. An $\alpha$ is in the $i^\text{th}$ position in the matrix if and only if the $i^\text{th}$ letters are both $x$, and the solution is $x=a$. This is symmetric with $\beta$, except if the solution is $x=b$. 
+
+## Counting
+
+We have the following formula to count all possible equations for a given value of $n$. Fix a matrix with some $k$ number of $a$ elements. This gives 
+$$
+\sum_{i=0}^{\lfloor {k\over 2}\rfloor-1}{k\choose i}
+$$
+possible equations that are contributed by the $a$ elements.
+The remaining values are either $1$ or $\alpha$. $\alpha$ contributes one equation, $1$ contributes two. To count the number of equations contributed, we have
+$$
+\sum_{j=0}^{n-k}2^j{n-k\choose j}.
+$$
+This multiplied by two to account for $a$ or $b$, and then multiplied by $n\choose k$ gives all possible equations for a fixed $k$.
+Thus, the number of all possible equations for a fixed $n$ is
+$$
+\sum_{k=0}^n\left(2{n\choose k}\times\sum_{i=0}^{\lfloor {k\over 2}\rfloor-1}{k\choose i}\times\sum_{j=0}^{n-k}2^j{n-k\choose j}\right).
+$$
+
+Note that this only generates equations which lead to equations with differing number of constants on either side.
