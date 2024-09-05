@@ -6,6 +6,7 @@ from equationSolver import EquationSolver
 from pprint import pprint as pp
 from matplotlib import pyplot as plt
 from tqdm import tqdm
+from math import comb
 
 
 def find_solns_greater_than_1(n, filename):
@@ -98,4 +99,38 @@ def reverse_analysis():
     graph_results(results)
 
 
-reverse_analysis()
+# reverse_analysis()
+
+def find_empty_solns(n, filename):
+    results = []
+    count = 0
+    g = EquationGenerator(n)
+    g._generate_equations()
+
+    for i, v in tqdm(enumerate(g._words)):
+        for _, w in enumerate(g._words[i+1:]):
+            if "x" not in v and "x" not in w:
+                continue
+
+            if v.replace("x", "") == w.replace("x", ""):
+                if v.replace("x", "a") != w.replace("x", "a") and v.replace("x", "b") != w.replace("x", "b"):
+                    count += 1
+                    results.append(f"{v} = {w}")
+
+    with open(filename, "w") as file:
+        for r in results:
+            file.write(f"{r}\n")
+
+    return count
+
+# need to refine formula
+def empty_soln_formula(n):
+    return sum([
+        comb(n, k) * comb(n-1, k-1) * (n-k) * 2**(n-k-1) for k in range(1,n)
+    ])
+
+
+n = 7
+count = find_empty_solns(n, "empty_solns.txt")
+print(f"Count: {count}")
+print(f"Formula: {empty_soln_formula(n)}")
