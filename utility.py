@@ -102,8 +102,10 @@ def reverse_analysis():
 
 
 def find_empty_solns(n, filename=None):
-    # function to find equations with the empty word as a solution
-    results = []
+    # function to find equations with the empty word as a solution    
+    if filename is not None:    
+        file = open(filename, "w")
+
     count = 0
     g = EquationGenerator(n)
     g._generate_equations()
@@ -115,13 +117,11 @@ def find_empty_solns(n, filename=None):
 
             if v.replace("x", "") == w.replace("x", ""):
                 count += 1
-                results.append(f"{v} = {w}")
+                if filename is not None:
+                    file.write(f"{v} = {w}\n")
 
     if filename is not None:
-        with open(filename, "w") as file:
-            for r in results:
-                file.write(f"{r}\n")
-
+        file.close()
     return count
 
 def empty_soln_formula(n):
@@ -132,9 +132,48 @@ def empty_soln_formula(n):
 def empty_soln_analysis():
     MAX = 8
     for i in range(2, MAX+1):
-        count = find_empty_solns(i)
+        count = find_empty_solns(i, filename=f"empty_soln_results/empty_solns_{i}.txt")
         formula = empty_soln_formula(i)
 
         print(f"n = {i}, count = {count}, formula = {formula}")
 
-empty_soln_analysis()
+# empty_soln_analysis()
+
+
+def find_solns_at_least_one(n, filename=None):
+    # function to find equations with a solution that is not the empty word
+    # and has solution of length 1
+    if filename is not None:
+        file = open(filename, "w")
+
+    count = 0
+    g = EquationGenerator(n)
+    g._generate_equations()
+
+    for i, v in enumerate(g._words):
+        for _, w in enumerate(g._words[i:]):
+            if "x" not in v and "x" not in w:
+                continue
+
+            # v and w should have same num of variables
+            if sum([1 for c in v if c == "x"]) != sum([1 for c in w if c == "x"]):
+                continue
+
+            if v.replace("x", "") != w.replace("x", ""):
+                if v.replace("x", "a") == w.replace("x", "a") or v.replace("x", "b") == w.replace("x", "b"):
+                    count += 1
+                    if filename is not None:
+                        file.write(f"{v} = {w}\n")
+                        
+    if filename is not None:
+        file.close()
+
+    return count
+
+def non_empty_analysis():
+    MAX = 7
+    for i in range(2, MAX+1):
+        count = find_solns_at_least_one(i, filename=f"solns_at_least_one_results/solns_at_least_one{i}.txt")
+        print(f"n = {i}, count = {count}")
+
+non_empty_analysis()
