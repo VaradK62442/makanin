@@ -6,7 +6,7 @@ from equationSolver import EquationSolver
 from pprint import pprint as pp
 from matplotlib import pyplot as plt
 from tqdm import tqdm
-from math import comb
+from math import comb, ceil
 
 
 def find_solns_greater_than_1(n, filename):
@@ -98,39 +98,43 @@ def reverse_analysis():
         pp(f"Results for n = {i}: {results[i][0]:.2f}% have a solution")
     graph_results(results)
 
-
 # reverse_analysis()
 
-def find_empty_solns(n, filename):
+
+def find_empty_solns(n, filename=None):
+    # function to find equations with the empty word as a solution
     results = []
     count = 0
     g = EquationGenerator(n)
     g._generate_equations()
 
-    for i, v in tqdm(enumerate(g._words)):
-        for _, w in enumerate(g._words[i+1:]):
+    for i, v in enumerate(g._words):
+        for _, w in enumerate(g._words[i:]):
             if "x" not in v and "x" not in w:
                 continue
 
             if v.replace("x", "") == w.replace("x", ""):
-                if v.replace("x", "a") != w.replace("x", "a") and v.replace("x", "b") != w.replace("x", "b"):
-                    count += 1
-                    results.append(f"{v} = {w}")
+                count += 1
+                results.append(f"{v} = {w}")
 
-    with open(filename, "w") as file:
-        for r in results:
-            file.write(f"{r}\n")
+    if filename is not None:
+        with open(filename, "w") as file:
+            for r in results:
+                file.write(f"{r}\n")
 
     return count
 
-# need to refine formula
 def empty_soln_formula(n):
     return sum([
-        comb(n, k) * comb(n-1, k-1) * (n-k) * 2**(n-k-1) for k in range(1,n)
+        (comb(n, k) + comb(comb(n, k), 2)) * 2**(n-k) for k in range(1, n+1)
     ])
 
+def empty_soln_analysis():
+    MAX = 8
+    for i in range(2, MAX+1):
+        count = find_empty_solns(i)
+        formula = empty_soln_formula(i)
 
-n = 7
-count = find_empty_solns(n, "empty_solns.txt")
-print(f"Count: {count}")
-print(f"Formula: {empty_soln_formula(n)}")
+        print(f"n = {i}, count = {count}, formula = {formula}")
+
+empty_soln_analysis()
