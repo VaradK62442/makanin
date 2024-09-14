@@ -7,6 +7,7 @@ from pprint import pprint as pp
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 from math import comb, ceil
+import os
 
 
 def find_solns_greater_than_1(n, filename):
@@ -101,9 +102,10 @@ def reverse_analysis():
 # reverse_analysis()
 
 
-def find_empty_solns(n, filename=None):
-    # function to find equations with the empty word as a solution    
-    if filename is not None:    
+
+def find_solns_given_criteria(n, criteria, filename=None):
+    # function to find equations with solutions that satisfy the given criteria
+    if filename is not None:
         file = open(filename, "w")
 
     count = 0
@@ -115,14 +117,37 @@ def find_empty_solns(n, filename=None):
             if "x" not in v and "x" not in w:
                 continue
 
-            if v.replace("x", "") == w.replace("x", ""):
+            if criteria(v, w):
                 count += 1
                 if filename is not None:
                     file.write(f"{v} = {w}\n")
 
     if filename is not None:
         file.close()
+
     return count
+
+def find_soln_analysis(criteria, folder):
+    print(f"results for {criteria.__name__}")
+    SUPER_FOLDER = "soln_analysis"
+    full_folder = os.path.join(SUPER_FOLDER, folder)
+    MAX = 7
+    if not os.path.isdir(full_folder):
+        os.mkdir(full_folder)
+    for i in range(2, MAX+1):
+        count = find_solns_given_criteria(i, criteria, filename=f"{full_folder}/{folder}_{i}.txt")
+        print(f"n = {i}, count = {count}")
+        print(f"n = {i}, count = {count}", file=open(f"{full_folder}/{folder}.txt", "a"))
+
+def soln_is_valid(v, w, soln):
+    return v.replace("x", soln) == w.replace("x", soln)
+
+
+def is_empty_soln(v, w):
+    return soln_is_valid(v, w, "")
+
+def find_empty_solns(n, filename=None):
+    return find_solns_given_criteria(n, is_empty_soln, filename)
 
 def empty_soln_formula(n):
     return sum([
@@ -130,50 +155,78 @@ def empty_soln_formula(n):
     ])
 
 def empty_soln_analysis():
-    MAX = 8
-    for i in range(2, MAX+1):
-        count = find_empty_solns(i, filename=f"empty_soln_results/empty_solns_{i}.txt")
-        formula = empty_soln_formula(i)
-
-        print(f"n = {i}, count = {count}, formula = {formula}")
+    find_soln_analysis(is_empty_soln, "empty_soln_results")
 
 # empty_soln_analysis()
 
 
+def soln_length_one(v, w):
+    if soln_is_valid(v, w, ""):
+        if soln_is_valid(v, w, "a") or soln_is_valid(v, w, "b"):
+            return True
+    return False
+
 def find_solns_at_least_one(n, filename=None):
     # function to find equations with a solution that is not the empty word
     # and has solution of length 1
-    if filename is not None:
-        file = open(filename, "w")
+    return find_solns_given_criteria(n, soln_length_one, filename)
 
-    count = 0
-    g = EquationGenerator(n)
-    g._generate_equations()
+def soln_length_one_analysis():
+    return find_soln_analysis(soln_length_one, "soln_length_one_results")
 
-    for i, v in enumerate(g._words):
-        for _, w in enumerate(g._words[i:]):
-            if "x" not in v and "x" not in w:
-                continue
+# soln_length_one_analysis()
 
-            # v and w should have same num of variables
-            if sum([1 for c in v if c == "x"]) != sum([1 for c in w if c == "x"]):
-                continue
 
-            if v.replace("x", "") != w.replace("x", ""):
-                if v.replace("x", "a") == w.replace("x", "a") or v.replace("x", "b") == w.replace("x", "b"):
-                    count += 1
-                    if filename is not None:
-                        file.write(f"{v} = {w}\n")
-                        
-    if filename is not None:
-        file.close()
+def soln_length_two(v, w):
+    if not soln_is_valid(v, w, ""):
+        if not soln_is_valid(v, w, "a") and not soln_is_valid(v, w, "b"):
+            if soln_is_valid(v, w, "aa") or soln_is_valid(v, w, "ab") or soln_is_valid(v, w, "ba") or soln_is_valid(v, w, "bb"):
+                return True
+    return False
 
-    return count
+def find_solns_size_two(n, filename=None):
+    """
+    Find equations with solutions of size two
+    and not size one or empty
+    """
+    return find_solns_given_criteria(n, soln_length_two, filename)
 
-def non_empty_analysis():
-    MAX = 7
-    for i in range(2, MAX+1):
-        count = find_solns_at_least_one(i, filename=f"solns_at_least_one_results/solns_at_least_one{i}.txt")
-        print(f"n = {i}, count = {count}")
+def two_soln_analysis():
+    find_soln_analysis(soln_length_two, "soln_length_two_results")
 
-non_empty_analysis()
+# two_soln_analysis()
+
+
+def soln_empty_and_one(v, w):
+    if soln_is_valid(v, w, ""):
+        if soln_is_valid(v, w, "a") or soln_is_valid(v, w, "b"):
+            return True
+    return False
+
+def find_solns_empty_and_one(n, filename=None):
+    # function to find equations with a solution that is empty word
+    # and has solution of length 1
+    return find_solns_given_criteria(n, soln_empty_and_one, filename)
+
+def empty_and_one_analysis():
+   return find_soln_analysis(soln_empty_and_one, "empty_and_one_results")
+
+# empty_and_one_analysis()
+
+
+def soln_one_and_two(v, w):
+    if not soln_is_valid(v, w, ""):
+        if soln_is_valid(v, w, "a") or soln_is_valid(v, w, "b"):
+            if soln_is_valid(v, w, "aa") or soln_is_valid(v, w, "ab") or soln_is_valid(v, w, "ba") or soln_is_valid(v, w, "bb"):
+                return True
+    return False
+
+def find_solns_one_and_two(n, filename=None):
+    # function to find equations with a solution that is not the empty word
+    # and has solution of length 1 and 2
+    return find_solns_given_criteria(n, soln_one_and_two, filename)
+
+def one_and_two_analysis():
+    return find_soln_analysis(soln_one_and_two, "one_and_two_results")
+
+# one_and_two_analysis()
