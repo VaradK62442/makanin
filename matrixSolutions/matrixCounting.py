@@ -10,27 +10,29 @@ Use `matrixSolution.py` to generate the equations.
 Use this result to verify the formula in `matrixSolution.md`.
 """
 
-from typing import List
-from math import comb, ceil
-from pprint import pprint as pp
+from math import ceil, comb
 
 from matrixGenerator import MatrixGenerator
-from matrixSolution import MatrixSolution
+from matrixSolution import Equation, MatrixSolution
 
 
 def derived_formula(n: int):
-    return sum([
-        2 * comb(n, k) * sum([
-            comb(k, i) for i in range(ceil(k/2))
-        ]) * sum([
-            2**j * comb(n-k, j) for j in range(n-k+1)
-        ]) for k in range(n+1)
-    ])
+    return sum(
+        [
+            2
+            * comb(n, k)
+            * sum([comb(k, i) for i in range(ceil(k / 2))])
+            * sum([2**j * comb(n - k, j) for j in range(n - k + 1)])
+            for k in range(n + 1)
+        ]
+    )
 
-def generate_matrices(n: int) -> List[List[List[str]]]:
+
+def generate_matrices(n: int) -> list[list[list[str]]]:
     return MatrixGenerator(n).generate_matrices()
 
-def filter_matrices(matrices: List[List[List[str]]]) -> List[List[List[str]]]:
+
+def filter_matrices(matrices: list[list[list[str]]]) -> list[list[list[str]]]:
     # contribution dict measures disparity of number of constants
     # 1 -> 0 since number of constants remains the same
     # a -> 1 since number of constants differs by 1
@@ -41,16 +43,21 @@ def filter_matrices(matrices: List[List[List[str]]]) -> List[List[List[str]]]:
     }
     m = []
     for matrix in matrices:
-        if sum([
-            contribution_dict[element] for element in [
-                matrix[i][i] for i in range(len(matrix))
-            ]
-        ]) != 0:
+        if (
+            sum(
+                [
+                    contribution_dict[element]
+                    for element in [matrix[i][i] for i in range(len(matrix))]
+                ]
+            )
+            != 0
+        ):
             m.append(matrix)
 
     return m
 
-def generate_equations(matrix: List[List[str]]) -> List[str]:
+
+def generate_equations(matrix: list[list[str]]) -> list[Equation]:
     return MatrixSolution(matrix).get_possible_equations()
 
 
@@ -63,13 +70,14 @@ def run(n: int):
         total_equations += len(generate_equations(matrix))
 
     print(f"formula: {derived_formula(n)}\ntotal equations: {total_equations}")
-    print(f"totals match: {derived_formula(n) == total_equations}\n")   
+    print(f"totals match: {derived_formula(n) == total_equations}\n")
 
 
 def main():
     limit = 7
-    for n in range(1, limit+1):
+    for n in range(1, limit + 1):
         run(n)
+
 
 if __name__ == "__main__":
     main()

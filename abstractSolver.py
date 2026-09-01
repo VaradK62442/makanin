@@ -1,11 +1,13 @@
+from typing import ClassVar
+
 DEBUG = False
 dprint = lambda *args, **kwargs: print(*args, **kwargs) if DEBUG else None
 
+
 class AbstractSolver:
-    
-    LETTERS = set("ab")
-    VARIABLES = set("x")
-    
+    LETTERS: ClassVar[set] = set("ab")
+    VARIABLES: ClassVar[set] = set("x")
+
     def __init__(self, v: str, w: str):
         assert len(v) == len(w)
         assert set(v).issubset(AbstractSolver.LETTERS.union(AbstractSolver.VARIABLES))
@@ -22,16 +24,19 @@ class AbstractSolver:
 
     def __str__(self):
         return f"{self.V} = {self.W}"
-    
-    def __eq__(self, other: "AbstractSolver"):
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, AbstractSolver):
+            return False
+
         return self.V == other.V and self.W == other.W
-    
-    def __ne__(self, other: "AbstractSolver"):
+
+    def __ne__(self, other) -> bool:
         return not self.__eq__(other)
-    
+
     def __hash__(self):
         return hash((self.V, self.W))
-    
+
     def _preliminary_check(self) -> str | None:
         if self.v == "" or self.w == "":
             return ""
@@ -42,22 +47,27 @@ class AbstractSolver:
                 dprint("not equal")
                 return ""
 
-        if self.v[-1] in AbstractSolver.LETTERS and self.w[-1] in AbstractSolver.LETTERS:
+        if (
+            self.v[-1] in AbstractSolver.LETTERS
+            and self.w[-1] in AbstractSolver.LETTERS
+        ):
             dprint("both in variables")
             if self.v[-1] != self.w[-1]:
                 dprint("not equal")
                 return ""
 
-        if sum([1 for l in self.v if l in AbstractSolver.LETTERS]) != sum([1 for l in self.w if l in AbstractSolver.LETTERS]):
+        if sum([1 for l in self.v if l in AbstractSolver.LETTERS]) != sum(
+            [1 for l in self.w if l in AbstractSolver.LETTERS]
+        ):
             dprint("diff num consts")
             for l in AbstractSolver.LETTERS:
                 if self.v.replace("x", l) == self.w.replace("x", l):
                     return l
-            else:
-                return ""
+
+            return ""
 
         return None
-    
+
     def _remove_prefixes(self):
         i = 0
         while i < self.n and self.v[i] == self.w[i]:
@@ -78,9 +88,9 @@ class AbstractSolver:
     def _remove_prefixes_and_suffixes(self):
         self._remove_prefixes()
         self._remove_suffixes()
-    
+
     def solve(self) -> str:
         raise NotImplementedError("Subclasses must implement this method")
-    
+
     def check_soln(self, soln: str) -> bool:
         return self.V.replace("x", soln) == self.W.replace("x", soln)

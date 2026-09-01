@@ -7,8 +7,8 @@
 
 from abstractSolver import AbstractSolver, dprint
 
-class EquationSolver(AbstractSolver):
 
+class EquationSolver(AbstractSolver):
     ALLOWED_ITERATIONS = 100
 
     def __init__(self, v, w, x_is_non_trivial=False):
@@ -32,7 +32,7 @@ class EquationSolver(AbstractSolver):
             dprint("empty replacement")
             return True
         return False
-    
+
     def _backtrack(self, solved_x="x"):
         for variable, replacement in self._replacements:
             solved_x = solved_x.replace(variable, replacement)
@@ -56,18 +56,24 @@ class EquationSolver(AbstractSolver):
             if self.v == self.w:
                 dprint("Triviality")
                 return ""
-            
+
             if not self._x_is_non_trivial and self._try_empty_replacement():
                 break
 
             self._x_is_non_trivial = False
 
             # if v = x.. and w = a.., then set x = ax, and cancel
-            if self.v[0] in AbstractSolver.VARIABLES and self.w[0] in AbstractSolver.LETTERS:
+            if (
+                self.v[0] in AbstractSolver.VARIABLES
+                and self.w[0] in AbstractSolver.LETTERS
+            ):
                 self._perform_replacement()
 
             # if v = a.. and w = x.., then swap, and set x = xa, and cancel
-            elif self.v[0] in AbstractSolver.LETTERS and self.w[0] in AbstractSolver.VARIABLES:
+            elif (
+                self.v[0] in AbstractSolver.LETTERS
+                and self.w[0] in AbstractSolver.VARIABLES
+            ):
                 self.v, self.w = self.w, self.v
                 dprint(f"swapped: {self}")
                 self._perform_replacement()
@@ -76,7 +82,7 @@ class EquationSolver(AbstractSolver):
             count += 1
 
         return self._backtrack()
-    
+
 
 def main():
     eqn = EquationSolver("abax", "xaab")
