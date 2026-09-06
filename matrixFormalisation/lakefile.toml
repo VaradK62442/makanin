@@ -1,0 +1,15 @@
+name = "matrixFormalisation"
+version = "0.1.0"
+defaultTargets = ["matrixformalisation"]
+
+[[lean_lib]]
+name = "MatrixFormalisation"
+
+[[lean_exe]]
+name = "matrixformalisation"
+root = "Main"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.1"
